@@ -1,4 +1,4 @@
-package RMI_Squared;
+package server;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -6,9 +6,11 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RMI_SquaredServer extends UnicastRemoteObject implements PartRepository {
+import interfaces.PartRepository;
 
-	public RMI_SquaredServer() throws RemoteException {
+public class Server extends UnicastRemoteObject implements PartRepository {
+
+	public Server() throws RemoteException {
 		super();
 	}
 
@@ -24,7 +26,7 @@ public class RMI_SquaredServer extends UnicastRemoteObject implements PartReposi
 
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException {
 		Registry registry = LocateRegistry.createRegistry(7777);
-		registry.bind("squared", new RMI_SquaredServer());
+		registry.bind("squared", new Server());
 		System.out.println("running");
 
 	}

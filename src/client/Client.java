@@ -1,4 +1,4 @@
-package RMI_Squared;
+package client;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -6,7 +6,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
-public class RMI_SquaredClient {
+import interfaces.PartRepository;
+
+public class Client {
 	
 	private static Scanner scan = null;
 
