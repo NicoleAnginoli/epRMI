@@ -1,6 +1,7 @@
 package server;
 
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -8,7 +9,6 @@ import java.rmi.server.UnicastRemoteObject;
 
 import helper.PartList;
 import impl.PartImpl;
-import impl.PartRepositoryImpl;
 import interfaces.Part;
 import interfaces.PartRepository;
 
@@ -18,9 +18,11 @@ public class Server extends UnicastRemoteObject implements PartRepository{
 	
 	private Integer partsQuantity;
 	
-	private PartRepositoryImpl partRepository;
+	private PartRepository partRepository;
 	
 	private PartList partList;
+	
+	private Registry registry;
 	
 	public Server() throws RemoteException {
 		super();
@@ -28,15 +30,22 @@ public class Server extends UnicastRemoteObject implements PartRepository{
 	
 	public Server(String name) throws RemoteException, AlreadyBoundException{
 		this.serverName = name;
-		this.partRepository = new PartRepositoryImpl(this);
+		//this.partRepository = new PartRepositoryImpl(this);
 		this.partList = new PartList();
-		PartRepository stub = (PartRepository) UnicastRemoteObject.exportObject(partRepository,0);
+		//PartRepository stub = (PartRepository) UnicastRemoteObject.exportObject(partRepository,0);
 	}
 
 	public static void main(String[] args) throws RemoteException, AlreadyBoundException {
 		Registry registry = LocateRegistry.createRegistry(7777);
-		registry.bind("squared", new Server("nome"));
-		System.out.println("running");
+		registry.bind("rmiServer", new Server("nome"));
+		System.out.println("O servidor está rodando...");
+	}
+	
+	public void stopServer() throws RemoteException, NotBoundException {
+		registry = LocateRegistry.getRegistry();
+		registry.unbind(this.serverName);
+		System.out.println("Servidor "+this.serverName+" finalizado.");
+
 	}
 
 	@Override
@@ -44,11 +53,11 @@ public class Server extends UnicastRemoteObject implements PartRepository{
 		Part part = new PartImpl(name, description);
 		part.setPartRepository(partRepository);
 		this.partList.addPart(part);
-		return part.getPartCode();
+		return "A peça de código "+part.getPartCode()+" foi criada";
 	}
 	
 	@Override
-	public String getPart(String partCode) throws RemoteException {
+	public String getPartAttributes(String partCode) throws RemoteException {
 		StringBuilder strBuilder = new StringBuilder("Part: ");
 		for (Part part : partList.getParts()) {
 			if (part.getPartCode().contentEquals(partCode)) {
@@ -59,26 +68,29 @@ public class Server extends UnicastRemoteObject implements PartRepository{
 				return strBuilder.toString();
 			}	
 		}
-		return null;
+		return "Não existe uma peça com esse código";
 	}
 	
-
 	@Override
-	public double getSquareRoot(double input) throws RemoteException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	public Integer getQuantityOfParts() {
-		return this.partsQuantity;
+	public Part getPart(String partCode) throws RemoteException {
+		for (Part part : partList.getParts()) {
+			if (part.getPartCode().contentEquals(partCode)) {
+				return part;
+			}	
+		}
+		return null;
 	}
 
 	@Override
 	public String getPartList() throws RemoteException {
 		StringBuilder strBuilder = new StringBuilder("Parts: ");
 		
+		if(partList.getParts().isEmpty()) {
+			return "Não há nenhuma peça na lista";
+		}
+		
 		for (Part part : partList.getParts()) {
-			strBuilder.append(part.getPartCode()+", ");
+			strBuilder.append("\n "+part.getPartCode());
 		}
 		
 		return strBuilder.toString();
