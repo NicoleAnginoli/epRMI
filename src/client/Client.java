@@ -26,10 +26,16 @@ public class Client {
 			
 			int choice = getChoice();
 			if (choice == 1) {
-				System.out.println(squaredapi.getSquare((getInput())));
+				System.out.println(squaredapi.addPart("nome1", "des1"));
+				
+			}
+			else if (choice == 2) {
+				String code = getInput();
+				System.out.println(squaredapi.getPart(code));
+				
 			}
 			else {
-				System.out.println(squaredapi.getSquareRoot((getInput())));
+				System.out.println(squaredapi.getPartList());
 			}
 		}
 
@@ -42,9 +48,9 @@ public class Client {
 		return input;
 	}
 	
-	public static double getInput() {
-		System.out.println("enter a number");
-		double input = scan.nextDouble();
+	public static String getInput() {
+		System.out.println("enter a code");
+		String input = scan.next();
 		return input;
 	}
 

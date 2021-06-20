@@ -1,8 +1,6 @@
 package interfaces;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import impl.PartImpl;
 
@@ -13,6 +11,7 @@ public interface Part {
 
 	public void setPartCode(String partCod);
 
+	public void setPartRepository(PartRepository partRepository);
 	
 //	Nome da peça
 	public String getPartName();

@@ -1,12 +1,17 @@
 package impl;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import interfaces.Part;
+import interfaces.PartRepository;
 
-public class PartImpl implements Part{
-	
-	private String partCode;
+public class PartImpl implements Serializable, Part {
+
+	private static final long serialVersionUID = -137878037795619547L;
+
+	private String partCode = UUID.randomUUID().toString();
 
 	private String partName;
 	
@@ -14,6 +19,24 @@ public class PartImpl implements Part{
 	
 	private List<Part> componentsList;
 	
+	private PartRepository partRepository;
+	
+	public PartImpl(String name, String desc) {
+		this.partName = name;
+		this.partDescription = desc;
+	}
+	
+	public PartImpl() {
+	}
+	
+	public PartRepository getPartRepository() {
+		return partRepository;
+	}
+
+	public void setPartRepository(PartRepository partRepository) {
+		this.partRepository = partRepository;
+	}
+
 	public String getPartCode() {
 		return partCode;
 	}
